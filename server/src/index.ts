@@ -20,6 +20,8 @@ import session from 'express-session';
 
 import express from 'express';
 
+import cors from 'cors';
+
 const main = async () => {
   const orm = await MikroORM.init(microConfig);
   await orm.getMigrator().up();
@@ -28,6 +30,13 @@ const main = async () => {
 
   const redisClient = redis.createClient();
   const RedisStore = connectRedis(session);
+
+  app.use(
+    cors({
+      origin: 'http://localhost:3000',
+      credentials: true
+    })
+  );
 
   app.use(
     session({
@@ -58,7 +67,10 @@ const main = async () => {
     context: ({ req, res }): MyContext => ({ em: orm.em, req, res })
   });
 
-  apolloServer.applyMiddleware({ app });
+  apolloServer.applyMiddleware({
+    app,
+    cors: false
+  });
 
   await app.listen(4000, () => {
     console.log(`server listening on port 4000`);

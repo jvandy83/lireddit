@@ -1,3 +1,9 @@
-const Index = () => <div>Hello World</div>;
+import Register from './register';
+
+const Index = () => (
+  <div>
+    <Register />
+  </div>
+);
 
 export default Index;
